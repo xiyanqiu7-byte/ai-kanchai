@@ -1,0 +1,71 @@
+{
+  "name": "ai-kanchai",
+  "private": true,
+  "version": "0.1.0",
+  "description": "AI-assisted character clip cutter for video editors",
+  "main": "electron/main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k \"vite --host 127.0.0.1 --port 5173\" \"wait-on http://127.0.0.1:5173 && cross-env VITE_DEV_SERVER_URL=http://127.0.0.1:5173 electron .\"",
+    "dev:web": "vite",
+    "dev:analyzer": "python3 analyzer/server.py",
+    "build": "tsc -b && vite build",
+    "pack": "npm run build && electron-builder --win dir",
+    "dist": "npm run build && electron-builder --win",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "test:analyzer": "python3 -c \"from analyzer.face_engine import FaceEngine; FaceEngine(); print('face engine ok')\""
+  },
+  "build": {
+    "appId": "com.kanchai.ai",
+    "productName": "AI砍柴",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "analyzer",
+        "to": "analyzer",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "uuid": "^14.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@types/uuid": "^10.0.0",
+    "@vitejs/plugin-react": "^6.0.4",
+    "concurrently": "^10.0.5",
+    "cross-env": "^10.1.0",
+    "electron": "^43.4.1",
+    "electron-builder": "^26.15.3",
+    "oxlint": "^1.75.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.0",
+    "wait-on": "^9.1.0"
+  }
+}
